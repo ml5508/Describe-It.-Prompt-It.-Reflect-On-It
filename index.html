@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#201a37" />
+    <title>Pinboard — sticky notes that stay visible</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23ffe268' d='M4 4h24v24H4z'/%3E%3Cpath fill='%23201a37' d='M10 12h12v2H10zm0 5h9v2h-9z'/%3E%3C/svg%3E" />
+    <style>
+      :root {
+        --ink: #211a37;
+        --muted: #716b83;
+        --paper: #f8f7fb;
+        --line: #e6e2ee;
+        --purple: #6951e7;
+        --purple-dark: #4d38bd;
+        --yellow: #ffe268;
+        --pink: #ffb5c8;
+        --blue: #b9dcff;
+        --mint: #bcebd0;
+        --shadow: 0 16px 36px rgba(31, 22, 62, .12);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: linear-gradient(135deg, #f8f7fc 0%, #f0ecff 100%);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+      }
+      button, textarea, input { font: inherit; }
+      button { cursor: pointer; }
+      .shell { max-width: 1500px; margin: auto; padding: 26px 36px 42px; }
+      header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.25rem; letter-spacing: -.03em; }
+      .brand-mark { position: relative; width: 32px; height: 32px; background: var(--yellow); border-radius: 7px 5px 9px 5px; transform: rotate(-4deg); box-shadow: 2px 4px 0 #f1c931; }
+      .brand-mark::after { content: ""; position: absolute; left: 8px; right: 8px; top: 11px; height: 2px; background: var(--ink); box-shadow: 0 5px 0 var(--ink); }
+      .top-actions { display: flex; align-items: center; gap: 12px; }
+      .sync { color: var(--muted); font-size: .88rem; display: flex; align-items: center; gap: 7px; }
+      .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #35b46c; }
+      .avatar { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #d9d2ff; color: var(--purple-dark); font-weight: 800; }
+
+      .app-grid { display: grid; grid-template-columns: minmax(290px, .82fr) minmax(540px, 1.8fr); gap: 26px; align-items: start; }
+      .composer { border-radius: 22px; padding: 25px; background: #fff; box-shadow: var(--shadow); }
+      .eyebrow { margin: 0 0 7px; color: var(--purple); font-size: .76rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+      h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.25rem); letter-spacing: -.055em; line-height: 1.07; }
+      .intro { margin: 11px 0 24px; color: var(--muted); line-height: 1.5; }
+      label { display: block; margin: 16px 0 8px; font-size: .86rem; font-weight: 750; }
+      input[type="text"], textarea { width: 100%; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: #fcfbfe; outline: none; transition: .18s; }
+      input[type="text"] { padding: 11px 13px; font-weight: 720; }
+      textarea { min-height: 110px; resize: vertical; padding: 13px; line-height: 1.45; }
+      input:focus, textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 3px #e8e3ff; }
+      .colors { display: flex; gap: 10px; }
+      .color-swatch { width: 28px; height: 28px; border: 2px solid transparent; border-radius: 50%; padding: 0; transition: transform .15s; }
+      .color-swatch:hover { transform: scale(1.13); }
+      .color-swatch[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+      .yellow { background: var(--yellow); } .pink { background: var(--pink); } .blue { background: var(--blue); } .mint { background: var(--mint); }
+      .shape-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .shape-choice { min-height: 62px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fcfbfe; font-size: .72rem; font-weight: 760; line-height: 1.1; transition: .16s; }
+      .shape-choice:hover { border-color: #b7aafa; background: #f6f3ff; }
+      .shape-choice[aria-pressed="true"] { border-color: var(--purple); color: var(--purple-dark); background: #eeeaff; box-shadow: inset 0 0 0 1px var(--purple); }
+      .shape-icon { display: block; position: relative; width: 30px; height: 25px; margin: 3px auto 4px; background: #6550d8; }
+      .shape-choice[data-shape="square"] .shape-icon { border-radius: 3px; }
+      .shape-choice[data-shape="circle"] .shape-icon { border-radius: 50%; }
+      .shape-choice[data-shape="heart"] .shape-icon { width: 19px; height: 19px; margin-top: 6px; transform: rotate(-45deg); border-radius: 3px; }
+      .shape-choice[data-shape="heart"] .shape-icon::before, .shape-choice[data-shape="heart"] .shape-icon::after { content: ""; position: absolute; width: 19px; height: 19px; border-radius: 50%; background: #6550d8; }
+      .shape-choice[data-shape="heart"] .shape-icon::before { top: -10px; left: 0; }
+      .shape-choice[data-shape="heart"] .shape-icon::after { top: 0; left: 10px; }
+      .shape-choice[data-shape="star"] .shape-icon { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 56%, 79% 92%, 50% 70%, 21% 92%, 32% 56%, 2% 35%, 39% 35%); }
+      .shape-choice[data-shape="cat"] .shape-icon { border-radius: 45% 45% 42% 42%; clip-path: polygon(0 22%, 20% 0, 31% 12%, 50% 7%, 69% 12%, 80% 0, 100% 22%, 94% 92%, 82% 100%, 18% 100%, 6% 92%); }
+      .shape-choice[data-shape="hat"] .shape-icon { clip-path: polygon(0 52%, 22% 42%, 29% 8%, 71% 8%, 78% 42%, 100% 52%, 94% 68%, 6% 68%); }
+      .drawing-tools { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 8px; }
+      .tool-group { display: flex; align-items: center; gap: 7px; }
+      .pen-color { width: 25px; height: 25px; border: 1px solid var(--line); padding: 1px; border-radius: 50%; background: white; }
+      .clear-drawing { border: 0; color: var(--purple-dark); background: #f0edff; border-radius: 8px; padding: 6px 9px; font-weight: 700; font-size: .78rem; }
+      canvas { display: block; width: 100%; height: 112px; border: 1px dashed #c7bedc; border-radius: 12px; background: repeating-linear-gradient(0deg, transparent, transparent 27px, #f0eef6 28px); touch-action: none; }
+      .composer-footer { display: flex; gap: 10px; margin-top: 20px; }
+      .primary { flex: 1; border: 0; border-radius: 11px; color: white; background: var(--purple); font-weight: 800; padding: 12px 15px; box-shadow: 0 5px 0 var(--purple-dark); transition: transform .15s, box-shadow .15s; }
+      .primary:hover { background: #5c44db; } .primary:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--purple-dark); }
+      .secondary { border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: white; font-weight: 760; padding: 10px 13px; }
+
+      .board { min-width: 0; }
+      .board-toolbar { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 14px; }
+      .board-toolbar h2 { margin: 0; font-size: 1.12rem; letter-spacing: -.03em; }
+      .board-toolbar p { color: var(--muted); margin: 5px 0 0; font-size: .9rem; }
+      .view-switch { display: flex; border: 1px solid var(--line); border-radius: 9px; padding: 3px; background: white; }
+      .view-switch button { color: var(--muted); border: 0; border-radius: 6px; background: transparent; padding: 7px 10px; font-size: .82rem; font-weight: 700; }
+      .view-switch button.active { color: var(--purple-dark); background: #eeeaff; }
+      .desktop { min-height: 605px; overflow: hidden; position: relative; padding: 30px; border: 8px solid #393157; border-radius: 24px; background: radial-gradient(circle at 85% 11%, rgba(255,255,255,.18) 0 2px, transparent 3px), linear-gradient(125deg, #7562d8, #4d408b 55%, #2d2955); box-shadow: var(--shadow); }
+      .desktop::before { content: "DESKTOP PREVIEW"; position: absolute; top: 12px; left: 19px; font-size: .67rem; font-weight: 800; letter-spacing: .14em; color: rgba(255,255,255,.55); }
+      .desktop::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 42px; background: rgba(21, 18, 48, .4); backdrop-filter: blur(8px); }
+      .note-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(130px, 1fr)); gap: 21px; padding-top: 19px; }
+      .note { position: relative; min-height: 196px; padding: 19px 17px 15px; color: #2c2731; border: 0; text-align: left; clip-path: polygon(0 0, 100% 0, 99% 96%, 91% 100%, 0 98%); box-shadow: 6px 11px 13px rgba(19, 14, 44, .31); transition: transform .18s, box-shadow .18s; }
+      .note:hover { transform: translateY(-5px) rotate(1deg); box-shadow: 9px 16px 18px rgba(19, 14, 44, .34); }
+      .note:nth-child(3n+1) { transform: rotate(-2deg); } .note:nth-child(3n+2) { transform: rotate(1.3deg); } .note:nth-child(3n+3) { transform: rotate(-.6deg); }
+      .note:nth-child(3n+1):hover { transform: translateY(-5px) rotate(-1deg); } .note:nth-child(3n+2):hover { transform: translateY(-5px) rotate(2deg); } .note:nth-child(3n+3):hover { transform: translateY(-5px) rotate(.4deg); }
+      .note-title { display: block; padding-right: 24px; font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.08rem; line-height: 1.12; }
+      .note-text { display: -webkit-box; overflow: hidden; margin: 8px 0; font-family: Georgia, "Times New Roman", serif; line-height: 1.36; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
+      .note-time { position: absolute; bottom: 13px; left: 17px; color: rgba(34, 29, 46, .67); font-size: .72rem; font-weight: 780; }
+      .delete-note { position: absolute; z-index: 2; top: 12px; right: 10px; display: grid; place-items: center; width: 27px; height: 27px; border: 0; border-radius: 50%; color: #4d4556; background: rgba(255,255,255,.7); box-shadow: 0 1px 3px rgba(35,27,48,.16); font-size: 1.05rem; font-weight: 800; line-height: 1; }
+      .delete-note:hover, .delete-note:focus { color: #fff; background: #d94f67; outline: 2px solid #fff; outline-offset: 1px; }
+      .note-yellow { background: var(--yellow); } .note-pink { background: var(--pink); } .note-blue { background: var(--blue); } .note-mint { background: var(--mint); }
+      .note.sticker-circle { min-height: 0; aspect-ratio: 1; border-radius: 50%; clip-path: none; }
+      .note.sticker-heart { padding: 43px 30px 31px; clip-path: polygon(50% 96%, 6% 53%, 2% 34%, 8% 18%, 20% 8%, 33% 9%, 43% 17%, 50% 27%, 57% 17%, 67% 9%, 80% 8%, 92% 18%, 98% 34%, 94% 53%); }
+      .note.sticker-star { padding: 45px 39px 34px; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 56%, 79% 92%, 50% 70%, 21% 92%, 32% 56%, 2% 35%, 39% 35%); }
+      .note.sticker-cat { padding-top: 34px; clip-path: polygon(0 20%, 20% 0, 31% 11%, 50% 7%, 69% 11%, 80% 0, 100% 20%, 94% 89%, 82% 100%, 18% 100%, 6% 89%); }
+      .note.sticker-hat { padding: 58px 31px 27px; clip-path: polygon(0 53%, 20% 43%, 28% 7%, 72% 7%, 80% 43%, 100% 53%, 94% 69%, 72% 69%, 68% 95%, 32% 95%, 28% 69%, 6% 69%); }
+      .note.sticker-heart .note-time, .note.sticker-star .note-time, .note.sticker-hat .note-time { left: 50%; bottom: 20px; transform: translateX(-50%); white-space: nowrap; }
+      .note.sticker-heart .delete-note, .note.sticker-star .delete-note { top: 43px; right: 33px; }
+      .note.sticker-cat .delete-note { top: 30px; right: 18px; }
+      .note.sticker-hat .delete-note { top: 49px; right: 26px; }
+      .empty { grid-column: 1 / -1; color: white; padding: 70px 20px; text-align: center; font-size: 1rem; }
+      .toast { position: fixed; z-index: 5; right: 25px; bottom: 23px; opacity: 0; transform: translateY(18px); pointer-events: none; color: white; background: #241c41; border-radius: 11px; box-shadow: var(--shadow); padding: 12px 15px; font-weight: 700; transition: .25s; }
+      .toast.show { opacity: 1; transform: translateY(0); }
+      .screen-stickers { position: fixed; z-index: 4; inset: 0; pointer-events: none; }
+      .screen-sticker { position: absolute; width: min(245px, calc(100vw - 32px)); min-height: 142px; padding: 18px 17px; color: #2c2731; clip-path: polygon(0 0, 100% 0, 99% 95%, 92% 100%, 0 98%); box-shadow: 7px 12px 19px rgba(27, 20, 52, .26); cursor: grab; touch-action: none; user-select: none; pointer-events: auto; animation: pop-in .3s cubic-bezier(.2, 1.35, .4, 1); }
+      .screen-sticker.is-dragging { cursor: grabbing; animation: none; box-shadow: 12px 19px 26px rgba(27, 20, 52, .32); }
+      .screen-sticker::before { content: "DRAG TO MOVE"; display: block; margin-bottom: 8px; color: rgba(39, 32, 47, .6); font-size: .62rem; font-weight: 850; letter-spacing: .1em; }
+      .screen-sticker strong { display: block; padding-right: 25px; font-family: Georgia, "Times New Roman", serif; font-size: 1.05rem; line-height: 1.14; }
+      .screen-sticker p { margin: 7px 0 0; display: -webkit-box; overflow: hidden; font-family: Georgia, "Times New Roman", serif; line-height: 1.3; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+      .screen-sticker.sticker-circle { min-height: 0; aspect-ratio: 1; border-radius: 50%; clip-path: none; }
+      .screen-sticker.sticker-heart { padding: 42px 33px 27px; clip-path: polygon(50% 96%, 6% 53%, 2% 34%, 8% 18%, 20% 8%, 33% 9%, 43% 17%, 50% 27%, 57% 17%, 67% 9%, 80% 8%, 92% 18%, 98% 34%, 94% 53%); }
+      .screen-sticker.sticker-star { padding: 43px 40px 29px; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 56%, 79% 92%, 50% 70%, 21% 92%, 32% 56%, 2% 35%, 39% 35%); }
+      .screen-sticker.sticker-cat { padding-top: 32px; clip-path: polygon(0 20%, 20% 0, 31% 11%, 50% 7%, 69% 11%, 80% 0, 100% 20%, 94% 89%, 82% 100%, 18% 100%, 6% 89%); }
+      .screen-sticker.sticker-hat { padding: 56px 35px 25px; clip-path: polygon(0 53%, 20% 43%, 28% 7%, 72% 7%, 80% 43%, 100% 53%, 94% 69%, 72% 69%, 68% 95%, 32% 95%, 28% 69%, 6% 69%); }
+      .screen-sticker.sticker-heart .delete-note, .screen-sticker.sticker-star .delete-note { top: 42px; right: 32px; }
+      .screen-sticker.sticker-cat .delete-note { top: 29px; right: 18px; }
+      .screen-sticker.sticker-hat .delete-note { top: 47px; right: 28px; }
+      @keyframes pop-in { from { opacity: 0; transform: rotate(-5deg) scale(.7); } to { opacity: 1; transform: rotate(-1deg) scale(1); } }
+      .phone-mode .desktop { max-width: 360px; min-height: 592px; margin: auto; border-width: 10px; border-radius: 42px; padding: 31px 18px 24px; }
+      .phone-mode .note-grid { grid-template-columns: repeat(2, 1fr); gap: 13px; }
+      .phone-mode .note { min-height: 164px; padding: 15px 12px; } .phone-mode .note-title { font-size: .95rem; } .phone-mode .note-text { font-size: .88rem; } .phone-mode .note-time { bottom: 10px; left: 12px; }
+
+      @media (max-width: 890px) { .shell { padding: 21px 18px 32px; } .app-grid { grid-template-columns: 1fr; } .desktop { min-height: 495px; } }
+      @media (max-width: 510px) { header { margin-bottom: 19px; } .sync { display: none; } .composer { padding: 20px; } .desktop { padding: 23px 15px; } .note-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; } .note { min-height: 160px; padding: 14px 12px; } .note-title { font-size: .95rem; } .note-text { font-size: .86rem; } .note-time { bottom: 10px; left: 12px; } .board-toolbar { align-items: start; } .view-switch button { padding: 6px 8px; } }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Pinboard</div>
+        <div class="top-actions"><span class="sync"><span class="sync-dot"></span>Saved on this device</span><button class="avatar" type="button" aria-label="Profile">ML</button></div>
+      </header>
+
+      <div class="app-grid">
+        <section class="composer" aria-labelledby="composer-title">
+          <p class="eyebrow">New sticky note</p>
+          <h1 id="composer-title">Put a thought where you’ll see it.</h1>
+          <p class="intro">Write a reminder, plan your day, or leave yourself a little spark of joy.</p>
+          <label for="note-title">Title</label>
+          <input id="note-title" type="text" maxlength="50" placeholder="e.g. Today’s bright idea" />
+          <label for="note-text">What do you want to remember?</label>
+          <textarea id="note-text" maxlength="240" placeholder="Write anything…"></textarea>
+          <label>Note color</label>
+          <div class="colors" aria-label="Choose a note color">
+            <button class="color-swatch yellow" type="button" data-color="yellow" aria-label="Sunny yellow" aria-pressed="true"></button>
+            <button class="color-swatch pink" type="button" data-color="pink" aria-label="Blush pink" aria-pressed="false"></button>
+            <button class="color-swatch blue" type="button" data-color="blue" aria-label="Sky blue" aria-pressed="false"></button>
+            <button class="color-swatch mint" type="button" data-color="mint" aria-label="Fresh mint" aria-pressed="false"></button>
+          </div>
+          <label>Sticker shape</label>
+          <div class="shape-picker" aria-label="Choose a sticker shape">
+            <button class="shape-choice" type="button" data-shape="square" aria-pressed="true"><span class="shape-icon" aria-hidden="true"></span>Classic</button>
+            <button class="shape-choice" type="button" data-shape="circle" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Circle</button>
+            <button class="shape-choice" type="button" data-shape="cat" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Cat</button>
+            <button class="shape-choice" type="button" data-shape="hat" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Hat</button>
+            <button class="shape-choice" type="button" data-shape="heart" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Heart</button>
+            <button class="shape-choice" type="button" data-shape="star" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Star</button>
+          </div>
+          <label for="doodle">Add a doodle <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
+          <div class="drawing-tools"><span class="tool-group"><input id="pen-color" class="pen-color" type="color" value="#4d38bd" aria-label="Doodle pen color" /><span style="font-size:.78rem;color:var(--muted)">Draw with your mouse or finger</span></span><button id="clear-drawing" class="clear-drawing" type="button">Clear</button></div>
+          <canvas id="doodle" aria-label="Doodle area"></canvas>
+          <div class="composer-footer"><button id="pin-note" class="primary" type="button">Pin to my screen</button><button id="reset-note" class="secondary" type="button">Reset</button></div>
+        </section>
+
+        <section class="board" aria-labelledby="board-title">
+          <div class="board-toolbar">
+            <div><h2 id="board-title">Your pinned reminders</h2><p>These notes stay front and center in your Pinboard.</p></div>
+            <div class="view-switch" aria-label="Preview device"><button class="active" type="button" data-view="desktop">Desktop</button><button type="button" data-view="phone">Phone</button></div>
+          </div>
+          <div id="desktop" class="desktop">
+            <div id="note-grid" class="note-grid" aria-live="polite"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <aside id="screen-stickers" class="screen-stickers" aria-label="Notes pinned on this page"></aside>
+
+    <script>
+      // State is saved in this browser, making the board feel like a personal desktop space.
+      const sampleNotes = [
+        { id: 1, title: '9:00 — Design review', text: 'Bring the three homepage sketches. Ask what feels most like us.', color: 'yellow', time: 'Today' },
+        { id: 2, title: 'Little reminder', text: 'Drink water. Stretch your shoulders. You are doing better than you think.', color: 'pink', time: 'All day' },
+        { id: 3, title: 'Saturday plans', text: 'Farmer’s market at 10. Pick up basil, peaches, and flowers.', color: 'mint', time: 'Sat, 10:00 AM' },
+        { id: 4, title: 'Idea parking lot', text: 'What if our welcome screen felt like opening a letter from a friend?', color: 'blue', time: 'Someday' }
+      ];
+      let notes = JSON.parse(localStorage.getItem('pinboard-notes') || 'null') || sampleNotes;
+      // These are the notes visibly pinned over this browser page, separate from the board preview.
+      let screenNoteIds = JSON.parse(localStorage.getItem('pinboard-screen-notes') || '[]');
+      let screenPositions = JSON.parse(localStorage.getItem('pinboard-screen-positions') || '{}');
+      let chosenColor = 'yellow';
+      let chosenShape = 'square';
+      let doodleData = '';
+      const titleInput = document.querySelector('#note-title');
+      const textInput = document.querySelector('#note-text');
+      const noteGrid = document.querySelector('#note-grid');
+      const toast = document.querySelector('#toast');
+      const screenStickers = document.querySelector('#screen-stickers');
+      const desktop = document.querySelector('#desktop');
+      const canvas = document.querySelector('#doodle');
+      const penColor = document.querySelector('#pen-color');
+      const ctx = canvas.getContext('2d');
+      let isDrawing = false;
+      let dragState = null;
+
+      function saveNotes() { localStorage.setItem('pinboard-notes', JSON.stringify(notes)); }
+      function showToast(message) { toast.textContent = message; toast.classList.add('show'); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800); }
+      function escapeHTML(value) { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; }
+      function renderNotes() {
+        noteGrid.innerHTML = notes.length ? notes.map(note => `
+          <article class="note note-${note.color} sticker-${note.shape || 'square'}" data-id="${note.id}" tabindex="0" aria-label="${escapeHTML(note.title)}">
+            <strong class="note-title">${escapeHTML(note.title)}</strong>
+            <p class="note-text">${escapeHTML(note.text)}</p>
+            ${note.doodle ? `<img src="${note.doodle}" alt="" style="width:58px;height:32px;object-fit:contain;position:absolute;right:12px;bottom:11px">` : ''}
+            <span class="note-time">${escapeHTML(note.time)}</span><button class="delete-note" type="button" aria-label="Delete ${escapeHTML(note.title)}" title="Delete note">×</button>
+          </article>`).join('') : '<p class="empty">Your desktop is clear. Pin a fresh thought to get started.</p>';
+      }
+      function renderScreenStickers() {
+        const screenNotes = screenNoteIds.map(id => notes.find(note => note.id === id)).filter(Boolean);
+        screenStickers.innerHTML = screenNotes.map((note, index) => {
+          const position = screenPositions[note.id] || { x: Math.max(16, window.innerWidth - 269), y: 76 + index * 158 };
+          return `
+          <article class="screen-sticker note-${note.color} sticker-${note.shape || 'square'}" data-id="${note.id}" style="left:${position.x}px;top:${position.y}px">
+            <strong>${escapeHTML(note.title)}</strong><p>${escapeHTML(note.text)}</p>
+            <button class="delete-note" type="button" aria-label="Delete ${escapeHTML(note.title)}" title="Delete note">×</button>
+          </article>`;
+        }).join('');
+      }
+      function clearForm() { titleInput.value = ''; textInput.value = ''; clearCanvas(); titleInput.focus(); }
+      function pinNote() {
+        const title = titleInput.value.trim() || 'A new reminder';
+        const text = textInput.value.trim();
+        if (!text) { textInput.focus(); showToast('Add a few words before pinning your note.'); return; }
+        notes.unshift({ id: Date.now(), title, text, color: chosenColor, shape: chosenShape, time: 'Just now', doodle: doodleData });
+        screenNoteIds.unshift(notes[0].id);
+        screenNoteIds = screenNoteIds.slice(0, 3);
+        screenPositions[notes[0].id] = { x: Math.max(16, window.innerWidth - 269), y: 76 };
+        saveNotes(); renderNotes(); clearForm(); showToast('Pinned! Your reminder is now front and center.');
+        localStorage.setItem('pinboard-screen-notes', JSON.stringify(screenNoteIds));
+        localStorage.setItem('pinboard-screen-positions', JSON.stringify(screenPositions));
+        renderScreenStickers();
+      }
+      function resizeCanvas() {
+        const old = canvas.toDataURL(); const rect = canvas.getBoundingClientRect();
+        canvas.width = Math.round(rect.width * devicePixelRatio); canvas.height = Math.round(rect.height * devicePixelRatio);
+        ctx.scale(devicePixelRatio, devicePixelRatio); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 3;
+        if (old && old.length > 20) { const image = new Image(); image.onload = () => ctx.drawImage(image, 0, 0, rect.width, rect.height); image.src = old; }
+      }
+      function point(event) { const box = canvas.getBoundingClientRect(); return { x: event.clientX - box.left, y: event.clientY - box.top }; }
+      function startDrawing(event) { isDrawing = true; const p = point(event); ctx.beginPath(); ctx.moveTo(p.x, p.y); canvas.setPointerCapture(event.pointerId); }
+      function draw(event) { if (!isDrawing) return; const p = point(event); ctx.strokeStyle = penColor.value; ctx.lineTo(p.x, p.y); ctx.stroke(); doodleData = canvas.toDataURL(); }
+      function stopDrawing() { isDrawing = false; }
+      function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); doodleData = ''; }
+
+      document.querySelectorAll('.color-swatch').forEach(button => button.addEventListener('click', () => {
+        chosenColor = button.dataset.color;
+        document.querySelectorAll('.color-swatch').forEach(swatch => swatch.setAttribute('aria-pressed', String(swatch === button)));
+      }));
+      document.querySelectorAll('.shape-choice').forEach(button => button.addEventListener('click', () => {
+        chosenShape = button.dataset.shape;
+        document.querySelectorAll('.shape-choice').forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+      }));
+      document.querySelector('#pin-note').addEventListener('click', pinNote);
+      document.querySelector('#reset-note').addEventListener('click', clearForm);
+      document.querySelector('#clear-drawing').addEventListener('click', clearCanvas);
+      function deleteNote(id) {
+        notes = notes.filter(note => note.id !== id);
+        screenNoteIds = screenNoteIds.filter(noteId => noteId !== id);
+        delete screenPositions[id];
+        saveNotes();
+        localStorage.setItem('pinboard-screen-notes', JSON.stringify(screenNoteIds));
+        localStorage.setItem('pinboard-screen-positions', JSON.stringify(screenPositions));
+        renderNotes(); renderScreenStickers(); showToast('Note deleted.');
+      }
+      noteGrid.addEventListener('click', event => { const button = event.target.closest('.delete-note'); if (button) deleteNote(Number(button.closest('.note').dataset.id)); });
+      screenStickers.addEventListener('click', event => { const button = event.target.closest('.delete-note'); if (button) deleteNote(Number(button.closest('.screen-sticker').dataset.id)); });
+      screenStickers.addEventListener('pointerdown', event => {
+        const sticker = event.target.closest('.screen-sticker');
+        if (!sticker || event.target.closest('.delete-note')) return;
+        const bounds = sticker.getBoundingClientRect();
+        dragState = { sticker, id: sticker.dataset.id, offsetX: event.clientX - bounds.left, offsetY: event.clientY - bounds.top };
+        sticker.classList.add('is-dragging');
+        sticker.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      });
+      screenStickers.addEventListener('pointermove', event => {
+        if (!dragState) return;
+        const bounds = dragState.sticker.getBoundingClientRect();
+        const x = Math.max(8, Math.min(event.clientX - dragState.offsetX, window.innerWidth - bounds.width - 8));
+        const y = Math.max(8, Math.min(event.clientY - dragState.offsetY, window.innerHeight - bounds.height - 8));
+        dragState.sticker.style.left = `${x}px`;
+        dragState.sticker.style.top = `${y}px`;
+        screenPositions[dragState.id] = { x, y };
+      });
+      function finishDrag() {
+        if (!dragState) return;
+        dragState.sticker.classList.remove('is-dragging');
+        localStorage.setItem('pinboard-screen-positions', JSON.stringify(screenPositions));
+        dragState = null;
+      }
+      screenStickers.addEventListener('pointerup', finishDrag);
+      screenStickers.addEventListener('pointercancel', finishDrag);
+      document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-view]').forEach(view => view.classList.toggle('active', view === button)); document.body.classList.toggle('phone-mode', button.dataset.view === 'phone'); }));
+      canvas.addEventListener('pointerdown', startDrawing); canvas.addEventListener('pointermove', draw); canvas.addEventListener('pointerup', stopDrawing); canvas.addEventListener('pointercancel', stopDrawing);
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas(); renderNotes(); renderScreenStickers();
+    </script>
+  </body>
+</html>
