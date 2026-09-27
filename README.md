@@ -9,14 +9,14 @@ A virtual sticky note that lets you jot down ideas, daily schedules, or importan
 3. Double-click `index.html` (or right-click and choose "Open with" your preferred web browser like Chrome or Safari) to run and test the project.
 
 ## AI Tools Used & Selected Prompts
-   AI Tool Used : Codex (ChatGPT)
-（1）Selected Prompt 1 (Core Interaction & Dragging):
+   AI Tool Used : Codex + ChatGPT
+（1）Selected Prompt 1 Core Interaction & Dragging:
     When the user clicks the 'Pin to my screen' button, create a virtual sticky note on the page. Make sure the note is draggable anywhere on the screen using mouse drag-and-drop.
 
-（2）Selected Prompt 2 (Playful Testing - Custom Shapes):
+（2）Selected Prompt 2 Playful Testing - Custom Shapes:
     Add options to customize the sticky note shapes. Can you generate playful shapes like a heart, a star, and a cat head using CSS?
 
-（3）Selected Prompt 3 (Feature Fix - Deletion Mechanism):
+（3）Selected Prompt 3 Feature Fix - Deletion Mechanism:
     Add a visible delete button to the corner of each sticky note so users can remove it once the task is finished.
 
 ## Reflection
