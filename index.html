@@ -41,8 +41,8 @@
       .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #35b46c; }
       .avatar { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #d9d2ff; color: var(--purple-dark); font-weight: 800; }
 
-      .app-grid { display: grid; grid-template-columns: minmax(290px, .82fr) minmax(540px, 1.8fr); gap: 26px; align-items: start; }
-      .composer { border-radius: 22px; padding: 25px; background: #fff; box-shadow: var(--shadow); }
+      .app-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
+      .composer { width: min(100%, 650px); margin: 0 auto; border-radius: 22px; padding: 25px; background: #fff; box-shadow: var(--shadow); }
       .eyebrow { margin: 0 0 7px; color: var(--purple); font-size: .76rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
       h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.25rem); letter-spacing: -.055em; line-height: 1.07; }
       .intro { margin: 11px 0 24px; color: var(--muted); line-height: 1.5; }
@@ -56,7 +56,20 @@
       .color-swatch:hover { transform: scale(1.13); }
       .color-swatch[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
       .yellow { background: var(--yellow); } .pink { background: var(--pink); } .blue { background: var(--blue); } .mint { background: var(--mint); }
+      .category-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+      .category-row .color-swatch { display: flex; align-items: center; justify-content: center; width: 100%; height: 44px; border: 2px solid transparent; border-radius: 10px; color: #393144; font-size: .77rem; font-weight: 800; }
+      .category-row .color-swatch[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+      .category-row .color-swatch:hover { transform: translateY(-2px); }
+      .deadline-row { display: grid; grid-template-columns: 1fr auto; gap: 9px; align-items: end; }
+      .deadline-row label { margin-bottom: 8px; }
+      input[type="date"] { width: 100%; min-height: 43px; border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color: var(--ink); background: #fcfbfe; }
       .shape-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .customize { margin-top: 17px; border-top: 1px solid var(--line); }
+      .customize summary { display: flex; align-items: center; justify-content: space-between; padding: 15px 0 0; color: var(--purple-dark); cursor: pointer; font-size: .9rem; font-weight: 780; list-style: none; }
+      .customize summary::-webkit-details-marker { display: none; }
+      .customize summary::after { content: "+"; display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%; color: var(--purple-dark); background: #eeeaff; font-size: 1.1rem; line-height: 1; }
+      .customize[open] summary::after { content: "−"; }
+      .customize-content { padding-top: 1px; }
       .shape-choice { min-height: 62px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fcfbfe; font-size: .72rem; font-weight: 760; line-height: 1.1; transition: .16s; }
       .shape-choice:hover { border-color: #b7aafa; background: #f6f3ff; }
       .shape-choice[aria-pressed="true"] { border-color: var(--purple); color: var(--purple-dark); background: #eeeaff; box-shadow: inset 0 0 0 1px var(--purple); }
@@ -84,9 +97,6 @@
       .board-toolbar { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 14px; }
       .board-toolbar h2 { margin: 0; font-size: 1.12rem; letter-spacing: -.03em; }
       .board-toolbar p { color: var(--muted); margin: 5px 0 0; font-size: .9rem; }
-      .view-switch { display: flex; border: 1px solid var(--line); border-radius: 9px; padding: 3px; background: white; }
-      .view-switch button { color: var(--muted); border: 0; border-radius: 6px; background: transparent; padding: 7px 10px; font-size: .82rem; font-weight: 700; }
-      .view-switch button.active { color: var(--purple-dark); background: #eeeaff; }
       .desktop { min-height: 605px; overflow: hidden; position: relative; padding: 30px; border: 8px solid #393157; border-radius: 24px; background: radial-gradient(circle at 85% 11%, rgba(255,255,255,.18) 0 2px, transparent 3px), linear-gradient(125deg, #7562d8, #4d408b 55%, #2d2955); box-shadow: var(--shadow); }
       .desktop::before { content: "DESKTOP PREVIEW"; position: absolute; top: 12px; left: 19px; font-size: .67rem; font-weight: 800; letter-spacing: .14em; color: rgba(255,255,255,.55); }
       .desktop::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 42px; background: rgba(21, 18, 48, .4); backdrop-filter: blur(8px); }
@@ -98,6 +108,7 @@
       .note-title { display: block; padding-right: 24px; font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.08rem; line-height: 1.12; }
       .note-text { display: -webkit-box; overflow: hidden; margin: 8px 0; font-family: Georgia, "Times New Roman", serif; line-height: 1.36; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
       .note-time { position: absolute; bottom: 13px; left: 17px; color: rgba(34, 29, 46, .67); font-size: .72rem; font-weight: 780; }
+      .note-time.is-deadline { color: #782943; background: rgba(255,255,255,.56); border-radius: 999px; padding: 5px 7px; font-size: .76rem; }
       .delete-note { position: absolute; z-index: 2; top: 12px; right: 10px; display: grid; place-items: center; width: 27px; height: 27px; border: 0; border-radius: 50%; color: #4d4556; background: rgba(255,255,255,.7); box-shadow: 0 1px 3px rgba(35,27,48,.16); font-size: 1.05rem; font-weight: 800; line-height: 1; }
       .delete-note:hover, .delete-note:focus { color: #fff; background: #d94f67; outline: 2px solid #fff; outline-offset: 1px; }
       .note-yellow { background: var(--yellow); } .note-pink { background: var(--pink); } .note-blue { background: var(--blue); } .note-mint { background: var(--mint); }
@@ -116,9 +127,11 @@
       .screen-stickers { position: fixed; z-index: 4; inset: 0; pointer-events: none; }
       .screen-sticker { position: absolute; width: min(245px, calc(100vw - 32px)); min-height: 142px; padding: 18px 17px; color: #2c2731; clip-path: polygon(0 0, 100% 0, 99% 95%, 92% 100%, 0 98%); box-shadow: 7px 12px 19px rgba(27, 20, 52, .26); cursor: grab; touch-action: none; user-select: none; pointer-events: auto; animation: pop-in .3s cubic-bezier(.2, 1.35, .4, 1); }
       .screen-sticker.is-dragging { cursor: grabbing; animation: none; box-shadow: 12px 19px 26px rgba(27, 20, 52, .32); }
-      .screen-sticker::before { content: "DRAG TO MOVE"; display: block; margin-bottom: 8px; color: rgba(39, 32, 47, .6); font-size: .62rem; font-weight: 850; letter-spacing: .1em; }
+      .screen-sticker::before { content: "DRAG TO MOVE · × TO DELETE"; display: block; max-height: 16px; margin-bottom: 8px; overflow: hidden; color: rgba(39, 32, 47, .6); font-size: .62rem; font-weight: 850; letter-spacing: .08em; opacity: 1; transition: opacity .25s, max-height .25s, margin .25s; }
+      .screen-sticker.hint-dismissed::before { max-height: 0; margin-bottom: 0; opacity: 0; }
       .screen-sticker strong { display: block; padding-right: 25px; font-family: Georgia, "Times New Roman", serif; font-size: 1.05rem; line-height: 1.14; }
       .screen-sticker p { margin: 7px 0 0; display: -webkit-box; overflow: hidden; font-family: Georgia, "Times New Roman", serif; line-height: 1.3; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+      .screen-deadline { display: inline-block; margin-top: 8px; padding: 4px 6px; border-radius: 999px; color: #782943; background: rgba(255,255,255,.58); font-size: .7rem; font-weight: 850; }
       .screen-sticker.sticker-circle { min-height: 0; aspect-ratio: 1; border-radius: 50%; clip-path: none; }
       .screen-sticker.sticker-heart { padding: 42px 33px 27px; clip-path: polygon(50% 96%, 6% 53%, 2% 34%, 8% 18%, 20% 8%, 33% 9%, 43% 17%, 50% 27%, 57% 17%, 67% 9%, 80% 8%, 92% 18%, 98% 34%, 94% 53%); }
       .screen-sticker.sticker-star { padding: 43px 40px 29px; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 56%, 79% 92%, 50% 70%, 21% 92%, 32% 56%, 2% 35%, 39% 35%); }
@@ -128,11 +141,8 @@
       .screen-sticker.sticker-cat .delete-note { top: 29px; right: 18px; }
       .screen-sticker.sticker-hat .delete-note { top: 47px; right: 28px; }
       @keyframes pop-in { from { opacity: 0; transform: rotate(-5deg) scale(.7); } to { opacity: 1; transform: rotate(-1deg) scale(1); } }
-      .phone-mode .desktop { max-width: 360px; min-height: 592px; margin: auto; border-width: 10px; border-radius: 42px; padding: 31px 18px 24px; }
-      .phone-mode .note-grid { grid-template-columns: repeat(2, 1fr); gap: 13px; }
-      .phone-mode .note { min-height: 164px; padding: 15px 12px; } .phone-mode .note-title { font-size: .95rem; } .phone-mode .note-text { font-size: .88rem; } .phone-mode .note-time { bottom: 10px; left: 12px; }
 
-      @media (max-width: 890px) { .shell { padding: 21px 18px 32px; } .app-grid { grid-template-columns: 1fr; } .desktop { min-height: 495px; } }
+      @media (max-width: 890px) { .shell { padding: 21px 18px 32px; } .desktop { min-height: 495px; } }
       @media (max-width: 510px) { header { margin-bottom: 19px; } .sync { display: none; } .composer { padding: 20px; } .desktop { padding: 23px 15px; } .note-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; } .note { min-height: 160px; padding: 14px 12px; } .note-title { font-size: .95rem; } .note-text { font-size: .86rem; } .note-time { bottom: 10px; left: 12px; } .board-toolbar { align-items: start; } .view-switch button { padding: 6px 8px; } }
     </style>
   </head>
@@ -148,17 +158,24 @@
           <p class="eyebrow">New sticky note</p>
           <h1 id="composer-title">Put a thought where you’ll see it.</h1>
           <p class="intro">Write a reminder, plan your day, or leave yourself a little spark of joy.</p>
-          <label for="note-title">Title</label>
+          <label for="note-title">Title <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
           <input id="note-title" type="text" maxlength="50" placeholder="e.g. Today’s bright idea" />
-          <label for="note-text">What do you want to remember?</label>
+          <label for="note-text">Write your note</label>
           <textarea id="note-text" maxlength="240" placeholder="Write anything…"></textarea>
-          <label>Note color</label>
-          <div class="colors" aria-label="Choose a note color">
-            <button class="color-swatch yellow" type="button" data-color="yellow" aria-label="Sunny yellow" aria-pressed="true"></button>
-            <button class="color-swatch pink" type="button" data-color="pink" aria-label="Blush pink" aria-pressed="false"></button>
-            <button class="color-swatch blue" type="button" data-color="blue" aria-label="Sky blue" aria-pressed="false"></button>
-            <button class="color-swatch mint" type="button" data-color="mint" aria-label="Fresh mint" aria-pressed="false"></button>
+          <label>Organize by purpose</label>
+          <div class="category-row" aria-label="Choose a note category">
+            <button class="color-swatch yellow" type="button" data-color="yellow" aria-label="Study note" aria-pressed="true">Study</button>
+            <button class="color-swatch pink" type="button" data-color="pink" aria-label="Personal reminder" aria-pressed="false">Personal</button>
+            <button class="color-swatch blue" type="button" data-color="blue" aria-label="Creative idea" aria-pressed="false">Ideas</button>
+            <button class="color-swatch mint" type="button" data-color="mint" aria-label="General note" aria-pressed="false">General</button>
           </div>
+          <div class="deadline-row">
+            <div><label for="note-deadline">Deadline <span style="font-weight:500;color:var(--muted)">(optional)</span></label><input id="note-deadline" type="date" /></div>
+          </div>
+          <div class="composer-footer"><button id="pin-note" class="primary" type="button">Pin note</button></div>
+          <details class="customize">
+            <summary>Customize note <span style="font-weight:500;color:var(--muted)">(optional)</span></summary>
+            <div class="customize-content">
           <label>Sticker shape</label>
           <div class="shape-picker" aria-label="Choose a sticker shape">
             <button class="shape-choice" type="button" data-shape="square" aria-pressed="true"><span class="shape-icon" aria-hidden="true"></span>Classic</button>
@@ -168,16 +185,17 @@
             <button class="shape-choice" type="button" data-shape="heart" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Heart</button>
             <button class="shape-choice" type="button" data-shape="star" aria-pressed="false"><span class="shape-icon" aria-hidden="true"></span>Star</button>
           </div>
-          <label for="doodle">Add a doodle <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
-          <div class="drawing-tools"><span class="tool-group"><input id="pen-color" class="pen-color" type="color" value="#4d38bd" aria-label="Doodle pen color" /><span style="font-size:.78rem;color:var(--muted)">Draw with your mouse or finger</span></span><button id="clear-drawing" class="clear-drawing" type="button">Clear</button></div>
+          <label for="doodle">Add a doodle</label>
+          <div class="drawing-tools"><span class="tool-group"><input id="pen-color" class="pen-color" type="color" value="#4d38bd" aria-label="Doodle pen color" /><span style="font-size:.78rem;color:var(--muted)">Draw with your mouse or finger</span></span><button id="clear-drawing" class="clear-drawing" type="button">Clear doodle</button></div>
           <canvas id="doodle" aria-label="Doodle area"></canvas>
-          <div class="composer-footer"><button id="pin-note" class="primary" type="button">Pin to my screen</button><button id="reset-note" class="secondary" type="button">Reset</button></div>
+          <button id="reset-note" class="secondary" type="button" style="width:100%;margin-top:12px">Clear draft</button>
+            </div>
+          </details>
         </section>
 
         <section class="board" aria-labelledby="board-title">
           <div class="board-toolbar">
-            <div><h2 id="board-title">Your pinned reminders</h2><p>These notes stay front and center in your Pinboard.</p></div>
-            <div class="view-switch" aria-label="Preview device"><button class="active" type="button" data-view="desktop">Desktop</button><button type="button" data-view="phone">Phone</button></div>
+            <div><h2 id="board-title">Your pinned reminders</h2><p>Write a note, pin it, then arrange it where it helps you remember.</p></div>
           </div>
           <div id="desktop" class="desktop">
             <div id="note-grid" class="note-grid" aria-live="polite"></div>
@@ -200,11 +218,13 @@
       // These are the notes visibly pinned over this browser page, separate from the board preview.
       let screenNoteIds = JSON.parse(localStorage.getItem('pinboard-screen-notes') || '[]');
       let screenPositions = JSON.parse(localStorage.getItem('pinboard-screen-positions') || '{}');
+      let hasSeenStickerHint = localStorage.getItem('pinboard-seen-sticker-hint') === 'true';
       let chosenColor = 'yellow';
       let chosenShape = 'square';
       let doodleData = '';
       const titleInput = document.querySelector('#note-title');
       const textInput = document.querySelector('#note-text');
+      const deadlineInput = document.querySelector('#note-deadline');
       const noteGrid = document.querySelector('#note-grid');
       const toast = document.querySelector('#toast');
       const screenStickers = document.querySelector('#screen-stickers');
@@ -218,13 +238,17 @@
       function saveNotes() { localStorage.setItem('pinboard-notes', JSON.stringify(notes)); }
       function showToast(message) { toast.textContent = message; toast.classList.add('show'); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800); }
       function escapeHTML(value) { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; }
+      function formatDeadline(value) {
+        const date = new Date(`${value}T12:00:00`);
+        return `Due ${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+      }
       function renderNotes() {
         noteGrid.innerHTML = notes.length ? notes.map(note => `
           <article class="note note-${note.color} sticker-${note.shape || 'square'}" data-id="${note.id}" tabindex="0" aria-label="${escapeHTML(note.title)}">
             <strong class="note-title">${escapeHTML(note.title)}</strong>
             <p class="note-text">${escapeHTML(note.text)}</p>
             ${note.doodle ? `<img src="${note.doodle}" alt="" style="width:58px;height:32px;object-fit:contain;position:absolute;right:12px;bottom:11px">` : ''}
-            <span class="note-time">${escapeHTML(note.time)}</span><button class="delete-note" type="button" aria-label="Delete ${escapeHTML(note.title)}" title="Delete note">×</button>
+            <span class="note-time ${note.deadline ? 'is-deadline' : ''}">${escapeHTML(note.deadline ? formatDeadline(note.deadline) : note.time)}</span><button class="delete-note" type="button" aria-label="Delete ${escapeHTML(note.title)}" title="Delete note">×</button>
           </article>`).join('') : '<p class="empty">Your desktop is clear. Pin a fresh thought to get started.</p>';
       }
       function renderScreenStickers() {
@@ -232,18 +256,19 @@
         screenStickers.innerHTML = screenNotes.map((note, index) => {
           const position = screenPositions[note.id] || { x: Math.max(16, window.innerWidth - 269), y: 76 + index * 158 };
           return `
-          <article class="screen-sticker note-${note.color} sticker-${note.shape || 'square'}" data-id="${note.id}" style="left:${position.x}px;top:${position.y}px">
-            <strong>${escapeHTML(note.title)}</strong><p>${escapeHTML(note.text)}</p>
+          <article class="screen-sticker note-${note.color} sticker-${note.shape || 'square'} ${hasSeenStickerHint ? 'hint-dismissed' : ''}" data-id="${note.id}" style="left:${position.x}px;top:${position.y}px">
+            <strong>${escapeHTML(note.title)}</strong><p>${escapeHTML(note.text)}</p>${note.deadline ? `<span class="screen-deadline">${escapeHTML(formatDeadline(note.deadline))}</span>` : ''}
             <button class="delete-note" type="button" aria-label="Delete ${escapeHTML(note.title)}" title="Delete note">×</button>
           </article>`;
         }).join('');
       }
-      function clearForm() { titleInput.value = ''; textInput.value = ''; clearCanvas(); titleInput.focus(); }
+      function clearForm() { titleInput.value = ''; textInput.value = ''; deadlineInput.value = ''; clearCanvas(); titleInput.focus(); }
       function pinNote() {
         const title = titleInput.value.trim() || 'A new reminder';
         const text = textInput.value.trim();
+        const deadline = deadlineInput.value;
         if (!text) { textInput.focus(); showToast('Add a few words before pinning your note.'); return; }
-        notes.unshift({ id: Date.now(), title, text, color: chosenColor, shape: chosenShape, time: 'Just now', doodle: doodleData });
+        notes.unshift({ id: Date.now(), title, text, color: chosenColor, shape: chosenShape, time: 'Just now', deadline, doodle: doodleData });
         screenNoteIds.unshift(notes[0].id);
         screenNoteIds = screenNoteIds.slice(0, 3);
         screenPositions[notes[0].id] = { x: Math.max(16, window.innerWidth - 269), y: 76 };
@@ -263,6 +288,12 @@
       function draw(event) { if (!isDrawing) return; const p = point(event); ctx.strokeStyle = penColor.value; ctx.lineTo(p.x, p.y); ctx.stroke(); doodleData = canvas.toDataURL(); }
       function stopDrawing() { isDrawing = false; }
       function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); doodleData = ''; }
+      function dismissStickerHint() {
+        if (hasSeenStickerHint) return;
+        hasSeenStickerHint = true;
+        localStorage.setItem('pinboard-seen-sticker-hint', 'true');
+        document.querySelectorAll('.screen-sticker').forEach(sticker => sticker.classList.add('hint-dismissed'));
+      }
 
       document.querySelectorAll('.color-swatch').forEach(button => button.addEventListener('click', () => {
         chosenColor = button.dataset.color;
@@ -289,6 +320,7 @@
       screenStickers.addEventListener('pointerdown', event => {
         const sticker = event.target.closest('.screen-sticker');
         if (!sticker || event.target.closest('.delete-note')) return;
+        dismissStickerHint();
         const bounds = sticker.getBoundingClientRect();
         dragState = { sticker, id: sticker.dataset.id, offsetX: event.clientX - bounds.left, offsetY: event.clientY - bounds.top };
         sticker.classList.add('is-dragging');
@@ -312,7 +344,6 @@
       }
       screenStickers.addEventListener('pointerup', finishDrag);
       screenStickers.addEventListener('pointercancel', finishDrag);
-      document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-view]').forEach(view => view.classList.toggle('active', view === button)); document.body.classList.toggle('phone-mode', button.dataset.view === 'phone'); }));
       canvas.addEventListener('pointerdown', startDrawing); canvas.addEventListener('pointermove', draw); canvas.addEventListener('pointerup', stopDrawing); canvas.addEventListener('pointercancel', stopDrawing);
       window.addEventListener('resize', resizeCanvas);
       resizeCanvas(); renderNotes(); renderScreenStickers();
