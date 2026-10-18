@@ -1,7 +1,7 @@
 # Describe It. Prompt It. Reflect On It
 
 ## Original idea
-A virtual sticky note that lets you jot down ideas, daily schedules, or important reminders—and even doodle something fun—right on your computer desktop or smartphone home screen.
+A virtual sticky note that lets you jot down ideas, daily schedules, or important reminders—and even doodle something fun—right on your computer desktop or smartphone home screen.Link of this idea:https://ml5508.github.io/Describe-It.-Prompt-It.-Reflect-On-It/
 
 ## Instructions for Opening or Running the Project
 1. Download or clone this GitHub repository to your local computer.
